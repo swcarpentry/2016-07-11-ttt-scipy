@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: workshop_page
 title: "Contributors' Guide"
 permalink: /contributing/
 ---

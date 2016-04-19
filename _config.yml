@@ -3,13 +3,13 @@
 #------------------------------------------------------------
 
 # Domain for searches.
-domain: "https://gvwilson.github.io/new-template"
+domain: "https://gvwilson.github.io/new-workshop-template"
 
 # URL for repository.
-repo: "https://github.com/gvwilson/new-template"
+repo: "https://github.com/gvwilson/new-workshop-template"
 
 # Root URL for lesson below domain.
-root: "/new-template"
+root: "/new-workshop-template"
 
 # Overall lesson title.
 title: "Workshop Template"

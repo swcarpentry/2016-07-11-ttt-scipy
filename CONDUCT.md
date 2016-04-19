@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: workshop_page
 title: Contributor Code of Conduct
 permalink: /conduct/
 ---

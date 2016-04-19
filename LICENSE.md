@@ -1,5 +1,5 @@
 ---
-layout: workshop_page
+layout: page
 title: "Licenses"
 permalink: /license/
 ---

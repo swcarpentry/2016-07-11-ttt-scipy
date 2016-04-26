@@ -9,6 +9,7 @@ import sys
 import os
 import glob
 import fnmatch
+import re
 import yaml
 from optparse import OptionParser
 from bs4 import BeautifulSoup
@@ -19,15 +20,29 @@ from lxml import etree
 LESSON_CONFIG = '''\
 patterns:
   '*.html':
-    - has_title_in_head
-    - has_navbar
-    - has_title_in_body
-    - has_footer
+    - lesson_has_title_in_head
+    - lesson_has_navbar
+    - lesson_has_title_in_body
+    - lesson_has_footer
   index.html:
-    - has_prereq
-    - has_syllabus
+    - lesson_has_prereq
+    - lesson_has_syllabus
   '*-*/index.html':
-    - has_objectives
+    - lesson_has_objectives
+'''
+
+# Default workshop configuration.
+WORKSHOP_CONFIG = '''\
+patterns:
+  'index.html':
+    - workshop_check_slug
+    - workshop_check_dates
+    - workshop_check_country
+    - workshop_check_location
+    - workshop_check_instructors
+    - workshop_check_helpers
+    - workshop_check_contact
+    - workshop_check_eventbrite
 '''
 
 
@@ -104,6 +119,8 @@ def read_config(args):
             args.config = yaml.load(reader)
     elif args.check_lesson:
         args.config = yaml.load(LESSON_CONFIG)
+    elif args.check_workshop:
+        args.config = yaml.load(WORKSHOP_CONFIG)
     else:
         assert False, 'Do not know what configuration to load'
 
@@ -133,62 +150,115 @@ def read_all_docs(source_dir):
 
 
 @rule
-def has_footer(filename, doc):
+def lesson_has_footer(filename, doc):
     '''Document has footer element.'''
 
-    _check_1(filename, doc, 'footers', '//footer')
+    _check_one_element(filename, doc, 'footers', '//footer')
 
 
 @rule
-def has_navbar(filename, doc):
+def lesson_has_navbar(filename, doc):
     '''Document has header element.'''
 
-    _check_1(filename, doc, 'div navbar', '//div[@class="navbar-header"]')
+    _check_one_element(filename, doc, 'div navbar', '//div[@class="navbar-header"]')
 
 
 @rule
-def has_objectives(filename, doc):
+def lesson_has_objectives(filename, doc):
     '''Episode has objectives.'''
 
-    _check_1(filename, doc, 'objectives div', '//blockquote[@class="objectives"]')
+    _check_one_element(filename, doc, 'objectives div', '//blockquote[@class="objectives"]')
 
 
 @rule
-def has_prereq(filename, doc):
+def lesson_has_prereq(filename, doc):
     '''Index page has prerequisites block.'''
 
-    _check_1(filename, doc, 'prerequisites blockquote', '//blockquote[@class="prereq"]')
+    _check_one_element(filename, doc, 'prerequisites blockquote', '//blockquote[@class="prereq"]')
 
 
 @rule
-def has_syllabus(filename, doc):
+def lesson_has_syllabus(filename, doc):
     '''Index page has syllabus.'''
 
-    _check_1(filename, doc, 'syllabus', '//div[@class="syllabus"]')
-    _check_1(filename, doc, 'syllabus title', '//div[@class="syllabus"]/h2')
-    _check_1(filename, doc, 'syllabus table', '//div[@class="syllabus"]/table')
+    _check_one_element(filename, doc, 'syllabus', '//div[@class="syllabus"]')
+    _check_one_element(filename, doc, 'syllabus title', '//div[@class="syllabus"]/h2')
+    _check_one_element(filename, doc, 'syllabus table', '//div[@class="syllabus"]/table')
 
 
 @rule
-def has_title_in_head(filename, doc):
+def lesson_has_title_in_head(filename, doc):
     '''Document has a title in the head.'''
 
-    _check_1(filename, doc, 'title in head', '//head//title')
+    _check_one_element(filename, doc, 'title in head', '//head//title')
 
 
 @rule
-def has_title_in_body(filename, doc):
+def lesson_has_title_in_body(filename, doc):
     '''Document has a title in the body.'''
 
-    _check_1(filename, doc, 'title in body', '//body//h1[@class="maintitle"]')
+    _check_one_element(filename, doc, 'title in body', '//body//h1[@class="maintitle"]')
 
 
-def _check_1(filename, doc, rulename, xpath):
+@rule
+def workshop_check_slug(filename, doc):
+    tag = 'has slug'
+    content = _check_one_element(filename, doc, tag, '//html/head/meta[@name="slug"]', attribute='content')
+    _check_regexp(filename, doc, tag, content, '.+')
+
+
+@rule
+def workshop_check_dates(filename, doc):
+    pass
+
+
+@rule
+def workshop_check_country(filename, doc):
+    pass
+
+
+@rule
+def workshop_check_location(filename, doc):
+    pass
+
+
+@rule
+def workshop_check_instructors(filename, doc):
+    pass
+
+
+@rule
+def workshop_check_helpers(filename, doc):
+    pass
+
+
+@rule
+def workshop_check_contact(filename, doc):
+    pass
+
+
+@rule
+def workshop_check_eventbrite(filename, doc):
+    pass
+
+
+def _check_one_element(filename, doc, rulename, xpath, attribute=None):
     '''Check that an equality holds.'''
 
+    result = None
     actual = doc.xpath(xpath)
     if len(actual) != 1:
         print('In {0}, checking {1}: expected 1 match, got {2}'.format(filename, rulename, len(actual)))
+    if attribute is not None:
+        result = actual[0].attrib.get(attribute, None)
+    return result
+
+
+def _check_regexp(filename, doc, rulename, content, pattern):
+    '''Check that text content matches pattern.'''
+
+    if not re.match(pattern, content):
+        print('In {0}, checking {1}: pattern "{2}" does not match value "{3}"'.format(filename, rulename, pattern, content))
 
 
 def _require(condition, message):

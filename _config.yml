@@ -3,13 +3,13 @@
 #------------------------------------------------------------
 
 # Domain for searches.
-domain: "https://gvwilson.github.io/new-workshop-template"
+domain: "https://swcarpentry.github.io/2016-06-08-ttt-arizona"
 
 # URL for repository.
-repo: "https://github.com/gvwilson/new-workshop-template"
+repo: "https://github.com/swcarpentry/2016-06-08-ttt-arizona"
 
 # Root URL for lesson below domain.
-root: "/new-workshop-template"
+root: "/2016-06-08-ttt-arizona"
 
 # Overall lesson title.
 title: "Workshop Template"
@@ -30,11 +30,11 @@ dc_site: "https://datacarpentry.org"
 swc_github: "https://github.com/swcarpentry"
 swc_site: "https://software-carpentry.org"
 swc_it_site: "https://swcarpentry.github.io/instructor-training/"
-template_repo: "https://github.com/gvwilson/new-template"
-example_repo: "https://github.com/gvwilson/new-lesson-example"
-example_site: "https://gvwilson.github.com/new-lesson-example"
-workshop_repo: "https://github.com/gvwilson/new-workshop-template"
-workshop_site: "https://gvwilson.github.io/new-workshop-template"
+template_repo: "https://github.com/swcarpentry/new-template"
+example_repo: "https://github.com/swcarpentry/new-lesson-example"
+example_site: "https://swcarpentry.github.com/new-lesson-example"
+workshop_repo: "https://github.com/swcarpentry/2016-06-08-ttt-arizona"
+workshop_site: "https://swcarpentry.github.io/2016-06-08-ttt-arizona"
 
 # Start time in minutes (540 is 09:00 am)
 start_time: 540
